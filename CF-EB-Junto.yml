@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  EBApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: "docker-react"
+      
+  EBApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName:
+        Ref: EBApplication
+      SourceBundle:
+        S3Bucket: !Sub "elasticbeanstalk-samples-${AWS::Region}"
+        S3Key: docker-sample-v3.zip
+ 
+  EBConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName:
+        Ref: EBApplication
+      SolutionStackName: 64bit Amazon Linux 2018.03 v2.14.0 running Docker 18.09.9-ce 
+ 
+  EBEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName:
+        Ref: EBApplication
+      EnvironmentName: "DockerReact-env"
+      TemplateName:
+        Ref: EBConfigurationTemplate
+      VersionLabel:
+        Ref: EBApplicationVersion
